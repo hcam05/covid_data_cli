@@ -27,10 +27,10 @@ extern crate maplit;
 async fn get_data(state_name: String) -> Result<Vec<State>, reqwest::Error> {
     let url = format!("https://corona.lmao.ninja/v2/states?sort=cases");
 
-    let response = reqwest::get(&url).await?;
-    let states: Vec<State> = response.json().await?;
+    let response: Vec<State> = reqwest::get(&url).await?.json().await?;
+    // let states: Vec<State> = response.json().await?;
 
-    let state: Vec<State> = states
+    let state: Vec<State> = response
         .into_iter()
         .filter(|state| state.state == state_name)
         .collect();
@@ -152,4 +152,13 @@ async fn main() -> Result<(), reqwest::Error> {
     }
 
     Ok(())
+}
+
+#[cfg(test)]
+mod unit_tests {
+    #[test]
+    fn test_input_validation() {
+        let mut test_state = "NEVADA".to_string();
+        assert!(super::format_state_name(&mut test_state) == "Nevada");
+    }
 }
