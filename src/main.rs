@@ -99,21 +99,34 @@ fn format_state_name(name: &mut String) -> String {
         .join("_")
         .to_lowercase();
 
-    return _state_lookup.get::<str>(&clean_input).unwrap().to_string();
+    let result = match _state_lookup.get::<str>(&clean_input) {
+        Some(state_name) => state_name.to_string(),
+        None => "not found".to_string(),
+    };
+
+    return result;
+}
+
+fn enter_state_name() -> String {
+    println!("Enter state");
+    let mut input = String::new();
+
+    io::stdin().read_line(&mut input).unwrap();
+
+    let mut state_name = format_state_name(&mut input);
+    println!("{:?}", input);
+    println!("{:?}", state_name);
+
+    if state_name == "not found".to_string() {
+        state_name = enter_state_name();
+    }
+
+    return state_name;
 }
 
 #[tokio::main]
 async fn main() -> Result<(), reqwest::Error> {
-    println!("Enter state");
-    let mut input = String::new();
-
-    // TODO find better way to handle edge case where user doesnt enter anything
-    io::stdin().read_line(&mut input).unwrap();
-
-    let state_name = format_state_name(&mut input);
-    println!("{:?}", input);
-    println!("{:?}", state_name);
-
+    let state_name = enter_state_name();
     let state = get_data(state_name).await?;
 
     if state.len() > 0 {
