@@ -158,7 +158,10 @@ async fn main() -> Result<(), reqwest::Error> {
 mod unit_tests {
     #[test]
     fn test_input_validation() {
-        let mut test_state = "NEVADA".to_string();
-        assert!(super::format_state_name(&mut test_state) == "Nevada");
+        let scenarios: [&str; 4] = ["NEVADA", "neVada", "Nevada", "nevada"];
+
+        for scenario in scenarios.iter() {
+            assert!(super::format_state_name(&mut scenario.to_string()) == "Nevada");
+        }
     }
 }
