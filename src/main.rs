@@ -28,7 +28,6 @@ async fn get_data(state_name: String) -> Result<Vec<State>, reqwest::Error> {
     let url = format!("https://corona.lmao.ninja/v2/states?sort=cases");
 
     let response: Vec<State> = reqwest::get(&url).await?.json().await?;
-    // let states: Vec<State> = response.json().await?;
 
     let state: Vec<State> = response
         .into_iter()
